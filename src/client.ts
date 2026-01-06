@@ -30,11 +30,55 @@ export class NotifyHubClient {
     this.client.interceptors.response.use(
       (response) => response,
       (error) => {
-        const message = error.response?.data?.message || error.message;
-        const statusCode = error.response?.status;
-        throw new NotifyHubError(message, statusCode, error.response?.data);
+        if (error.response) {
+          const data = error.response.data;
+          const statusCode = error.response.status;
+
+          let message = error.message;
+          let errors = null;
+
+          if (data?.error) {
+            if (Array.isArray(data.error)) {
+              errors = data.error;
+              message = data.error.join(", ");
+            } else {
+              message = data.error;
+            }
+          } else if (data?.message) {
+            if (Array.isArray(data.message)) {
+              errors = data.message;
+              message = "Validation failed";
+            } else {
+              message = data.message;
+            }
+          }
+
+          throw new NotifyHubError(message, statusCode, data, errors);
+        }
+
+        throw new NotifyHubError(error.message || "Network error occurred");
       }
     );
+  }
+
+  /**
+   * Test API connection
+   */
+  async ping(): Promise<{
+    success: boolean;
+    message: string;
+    timestamp: string;
+  }> {
+    const response = await this.client.get("/api/v1/ping");
+    return response.data;
+  }
+
+  /**
+   * Get API information
+   */
+  async getApiInfo(): Promise<any> {
+    const response = await this.client.get("/api/v1/info");
+    return response.data;
   }
 
   /**
