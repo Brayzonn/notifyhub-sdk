@@ -89,7 +89,7 @@ export class NotifyHubClient {
       "/api/v1/notifications/email",
       options
     );
-    return response.data.data;
+    return response.data;
   }
 
   /**
@@ -100,7 +100,7 @@ export class NotifyHubClient {
       "/api/v1/notifications/webhook",
       options
     );
-    return response.data.data;
+    return response.data;
   }
 
   /**
@@ -110,7 +110,7 @@ export class NotifyHubClient {
     const response = await this.client.get(
       `/api/v1/notifications/jobs/${jobId}`
     );
-    return response.data.data;
+    return response.data;
   }
 
   /**
@@ -125,7 +125,7 @@ export class NotifyHubClient {
     const response = await this.client.get("/api/v1/notifications/jobs", {
       params: options,
     });
-    return response.data.data;
+    return response.data;
   }
 
   /**
@@ -135,7 +135,7 @@ export class NotifyHubClient {
     const response = await this.client.post(
       `/api/v1/notifications/jobs/${jobId}/retry`
     );
-    return response.data.data;
+    return response.data;
   }
 
   /**
