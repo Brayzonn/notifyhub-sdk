@@ -28,7 +28,7 @@ export class NotifyHubClient {
     });
 
     this.client.interceptors.response.use(
-      (response) => response,
+      (response) => response.data,
       (error) => {
         if (error.response) {
           const data = error.response.data;
