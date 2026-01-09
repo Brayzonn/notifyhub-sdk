@@ -28,7 +28,11 @@ export class NotifyHubClient {
     });
 
     this.client.interceptors.response.use(
-      (response) => response.data,
+      (response) => {
+        const apiResponse = response.data.data;
+        if (apiResponse.message) return apiResponse.message;
+        return apiResponse;
+      },
       (error) => {
         if (error.response) {
           const data = error.response.data;
@@ -69,48 +73,35 @@ export class NotifyHubClient {
     message: string;
     timestamp: string;
   }> {
-    const response = await this.client.get("/api/v1/ping");
-    return response.data;
+    return await this.client.get("/api/v1/ping");
   }
 
   /**
    * Get API information
    */
   async getApiInfo(): Promise<any> {
-    const response = await this.client.get("/api/v1/info");
-    return response.data;
+    return await this.client.get("/api/v1/info");
   }
 
   /**
    * Send an email notification
    */
   async sendEmail(options: SendEmailOptions): Promise<JobResponse> {
-    const response = await this.client.post(
-      "/api/v1/notifications/email",
-      options
-    );
-    return response.data;
+    return await this.client.post("/api/v1/notifications/email", options);
   }
 
   /**
    * Send a webhook notification
    */
   async sendWebhook(options: SendWebhookOptions): Promise<JobResponse> {
-    const response = await this.client.post(
-      "/api/v1/notifications/webhook",
-      options
-    );
-    return response.data;
+    return await this.client.post("/api/v1/notifications/webhook", options);
   }
 
   /**
    * Get job status by ID
    */
   async getJob(jobId: string): Promise<JobStatus> {
-    const response = await this.client.get(
-      `/api/v1/notifications/jobs/${jobId}`
-    );
-    return response.data;
+    return await this.client.get(`/api/v1/notifications/jobs/${jobId}`);
   }
 
   /**
@@ -122,20 +113,16 @@ export class NotifyHubClient {
     type?: "email" | "webhook";
     status?: "pending" | "processing" | "completed" | "failed";
   }): Promise<{ data: JobStatus[]; pagination: any }> {
-    const response = await this.client.get("/api/v1/notifications/jobs", {
+    return await this.client.get("/api/v1/notifications/jobs", {
       params: options,
     });
-    return response.data;
   }
 
   /**
    * Retry a failed job
    */
   async retryJob(jobId: string): Promise<JobResponse> {
-    const response = await this.client.post(
-      `/api/v1/notifications/jobs/${jobId}/retry`
-    );
-    return response.data;
+    return await this.client.post(`/api/v1/notifications/jobs/${jobId}/retry`);
   }
 
   /**
@@ -144,34 +131,29 @@ export class NotifyHubClient {
   async requestDomainVerification(
     domain: string
   ): Promise<DomainVerificationResponse> {
-    const response = await this.client.post(
-      "/api/v1/customers/domain/request",
-      { domain }
-    );
-    return response.data;
+    return await this.client.post("/api/v1/customers/domain/request", {
+      domain,
+    });
   }
 
   /**
    * Check domain verification status
    */
   async verifyDomain(): Promise<DomainStatusResponse> {
-    const response = await this.client.post("/api/v1/customers/domain/verify");
-    return response.data;
+    return await this.client.post("/api/v1/customers/domain/verify");
   }
 
   /**
    * Get domain configuration status
    */
   async getDomainStatus(): Promise<DomainInfoResponse> {
-    const response = await this.client.get("/api/v1/customers/domain/status");
-    return response.data;
+    return await this.client.get("/api/v1/customers/domain/status");
   }
 
   /**
    * Remove domain configuration
    */
   async removeDomain(): Promise<{ message: string }> {
-    const response = await this.client.delete("/api/v1/customers/domain");
-    return response.data;
+    return await this.client.delete("/api/v1/customers/domain");
   }
 }
