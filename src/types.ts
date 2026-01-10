@@ -11,6 +11,13 @@ export interface SendEmailOptions {
   idempotencyKey?: string;
 }
 
+export interface ApiInfo {
+  name: string;
+  version: string;
+  description: string;
+  documentation: string;
+}
+
 export interface SendWebhookOptions {
   url: string;
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";

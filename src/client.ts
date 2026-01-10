@@ -8,6 +8,7 @@ import {
   DomainStatusResponse,
   DomainVerificationResponse,
   DomainInfoResponse,
+  ApiInfo,
 } from "./types";
 import { NotifyHubError } from "./errors";
 
@@ -68,18 +69,14 @@ export class NotifyHubClient {
   /**
    * Test API connection
    */
-  async ping(): Promise<{
-    success: boolean;
-    message: string;
-    timestamp: string;
-  }> {
+  async ping(): Promise<string> {
     return await this.client.get("/api/v1/ping");
   }
 
   /**
    * Get API information
    */
-  async getApiInfo(): Promise<any> {
+  async getApiInfo(): Promise<ApiInfo> {
     return await this.client.get("/api/v1/info");
   }
 
